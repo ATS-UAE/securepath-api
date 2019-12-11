@@ -2,6 +2,13 @@
 	"defaultSeverity": "error",
 	"extends": ["tslint:recommended", "tslint-config-prettier"],
 	"jsRules": {},
-	"rules": {},
+	"linterOptions": { "exclude": ["build", "node_modules"] },
+	"rules": {
+		"ordered-imports": false,
+		"object-literal-sort-keys": false,
+		"interface-name": false,
+		"no-unused-variable": true,
+		"no-unused-expression": true
+	},
 	"rulesDirectory": []
 }
