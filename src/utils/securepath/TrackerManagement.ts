@@ -29,7 +29,66 @@ export interface TrackerData {
 	ignitionSensor?: boolean;
 }
 
+export interface TrackerListItem {
+	chassisNo: string;
+	imei: string;
+	licensePlate: string;
+	trackerName: string;
+	searchKeywords: string;
+	simNo: string;
+	trackerExpiry: number;
+	trackerId: string;
+	deviceType: DeviceType;
+	users: string[];
+}
+
+export interface GetAllTrackerListResponse {
+	chassisNo: string;
+	imei: string;
+	licensePlate: string;
+	name: string;
+	searchKeywords: string;
+	simno: string;
+	trackerExpiry: number;
+	trackerId: string;
+	type: DeviceType;
+	users: string;
+}
+
 export class TrackerManagement extends SecurePath {
+	public getTrackers = async (): Promise<TrackerListItem[]> => {
+		await this.checkLogin();
+		const trackers = await this.api.get<GetAllTrackerListResponse[]>(
+			"http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=getAllTrackersList"
+		);
+
+		return trackers.data.map<TrackerListItem>(
+			({
+				chassisNo,
+				imei,
+				licensePlate,
+				name,
+				searchKeywords,
+				simno,
+				trackerId,
+				trackerExpiry,
+				type,
+				users
+			}) => ({
+				chassisNo,
+				imei,
+				licensePlate,
+				searchKeywords,
+				trackerName: name,
+				simNo: simno,
+				trackerId,
+				trackerExpiry,
+				deviceType: type,
+				users: users.split(",")
+			})
+		);
+	};
+
 	public createTracker = async (data: TrackerData) => {
 		await this.checkLogin();
 
