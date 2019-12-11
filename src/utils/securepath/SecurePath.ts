@@ -100,6 +100,10 @@ export class SecurePath {
 		}
 	};
 
+	get authCookie() {
+		return this.api.defaults.headers.Cookie;
+	}
+
 	get TrackerManagement() {
 		return new TrackerManagement(this.api);
 	}

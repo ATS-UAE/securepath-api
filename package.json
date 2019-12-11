@@ -1,8 +1,11 @@
 {
 	"name": "securepath-api",
 	"version": "0.22.0",
-	"description": "",
+	"description": "SecurePath API wrapper for both client and server JavaScript written in TypeScript.",
 	"main": "dist/index.js",
+	"repository": {
+		"url": "https://github.com/ramilamparo/securepath-rest"
+	},
 	"dependencies": {
 		"@types/node": "^12.12.17",
 		"axios": "^0.19.0",
