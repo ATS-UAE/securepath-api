@@ -52,7 +52,7 @@ export interface GetAllTrackerListResponse {
 	trackerExpiry: number;
 	trackerId: string;
 	type: DeviceType;
-	users: string;
+	users?: string;
 }
 
 export class TrackerManagement extends SecurePath {
@@ -84,7 +84,7 @@ export class TrackerManagement extends SecurePath {
 				trackerId,
 				trackerExpiry,
 				deviceType: type,
-				users: users.split(",")
+				users: users?.split(",") || []
 			})
 		);
 	};
