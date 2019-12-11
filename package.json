@@ -1,6 +1,6 @@
 {
 	"name": "securepath-api",
-	"version": "0.23.4",
+	"version": "0.23.5",
 	"description": "SecurePath API wrapper for both client and server JavaScript written in TypeScript.",
 	"main": "dist/index.js",
 	"repository": {
