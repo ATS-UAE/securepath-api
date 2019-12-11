@@ -54,10 +54,21 @@ export class SecurePath {
 		return sp;
 	};
 
-	public static useCookie = (cookie: string) => {
+	public static useCookie = async (cookie: string) => {
 		const api = axios.create({ withCredentials: true });
 		api.defaults.headers.Cookie = cookie;
-		return new SecurePath(api);
+		const sp = new SecurePath(api);
+
+		try {
+			await sp.checkLogin();
+		} catch (e) {
+			if (e instanceof AuthNeededException) {
+				throw new CredentialsException();
+			}
+			throw new Error("Unknown error");
+		}
+
+		return sp;
 	};
 
 	protected static isSecurepathForbidden = (
