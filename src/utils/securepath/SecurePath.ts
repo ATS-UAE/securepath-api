@@ -100,7 +100,7 @@ export class SecurePath {
 		}
 	};
 
-	get authCookie() {
+	get authCookie(): string {
 		return this.api.defaults.headers.Cookie;
 	}
 
