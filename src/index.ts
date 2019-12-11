@@ -1,2 +1,3 @@
-import { SecurePath } from "./utils";
-export default SecurePath;
+export { SecurePath as default } from "./utils";
+
+export * from "./utils/securepath";
