@@ -96,7 +96,7 @@ export class SecurePath {
 		);
 
 		if (SecurePath.isSecurepathForbidden(isLoggedIn)) {
-			throw new CredentialsException();
+			throw new AuthNeededException();
 		}
 	};
 
