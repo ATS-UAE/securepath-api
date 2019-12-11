@@ -5,7 +5,7 @@ import { DeviceExistingException } from "./exceptions/DeviceExistingException";
 
 export type DeviceType = "GP-01" | "RP-01" | "TT-01" | "TT-02" | "VT62";
 
-export interface TrackerManagementCreate {
+export interface TrackerData {
 	trackerName: string;
 	imei: string;
 	deviceType: DeviceType;
@@ -31,25 +31,58 @@ export interface TrackerManagementCreate {
 }
 
 export class TrackerManagement extends SecurePath {
-	public createTracker = async (data: TrackerManagementCreate) => {
+	public createTracker = async (data: TrackerData) => {
 		await this.checkLogin();
 
 		const trackerId = await this.api.get<{ tid: string }>(
 			"http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=getTrackerID"
 		);
 
+		await this.checkExistingImei(data.imei);
+
+		const params = this.getDefaultTrackerData({
+			...data,
+			trackerId: trackerId.data.tid
+		});
+
+		await this.api.post(
+			"http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=insertTrackerCard",
+			params
+		);
+
+		return trackerId.data.tid;
+	};
+
+	public updateTracker = async (trackerId: string, data: TrackerData) => {
+		await this.checkExistingImei(data.imei);
+
+		const params = this.getDefaultTrackerData({
+			...data,
+			trackerId
+		});
+
+		await this.api.post(
+			"http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=updateTrackerCard",
+			params
+		);
+	};
+
+	private checkExistingImei = async (imei: string) => {
 		const existing = await this.api.get(
-			`http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=validateIMEI&imei=${data.imei}`
+			`http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=validateIMEI&imei=${imei}`
 		);
 
 		if (existing.data.code === "exists") {
 			throw new DeviceExistingException();
 		}
+	};
 
+	private getDefaultTrackerData = (
+		data: TrackerData & { trackerId: string }
+	) => {
 		const dateNow = moment().format("YYYY-MM-DD");
-
-		const params: { [key: string]: string } = {
-			trackerid: trackerId.data.tid,
+		const formData: { [key: string]: string } = {
+			trackerid: data.trackerId,
 			name: data.trackerName,
 			imei: data.imei,
 			type: data.deviceType || "TT-01",
@@ -108,12 +141,6 @@ export class TrackerManagement extends SecurePath {
 			searchKeywords: data.searchKeywords || "",
 			remarks: data.remarks || ""
 		};
-
-		await this.api.post(
-			"http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=insertTrackerCard",
-			params
-		);
-
-		return trackerId.data.tid;
+		return formData;
 	};
 }
