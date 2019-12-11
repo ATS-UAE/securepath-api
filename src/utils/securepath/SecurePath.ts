@@ -100,7 +100,7 @@ export class SecurePath {
 		}
 	};
 
-	public TrackerManagement = () => {
+	get TrackerManagement() {
 		return new TrackerManagement(this.api);
-	};
+	}
 }
