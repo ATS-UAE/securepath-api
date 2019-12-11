@@ -1,18 +1,26 @@
 {
-  "name": "securepath-api",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "dependencies": {
-    "axios": "^0.19.0",
-    "md5-hex": "^3.0.1",
-    "moment": "^2.24.0",
-    "tslint-config-prettier": "^1.18.0"
-  },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC"
+	"name": "securepath-api",
+	"version": "0.1.0",
+	"description": "",
+	"main": "dist/index.js",
+	"dependencies": {
+		"@types/node": "^12.12.17",
+		"axios": "^0.19.0",
+		"md5-hex": "^3.0.1",
+		"moment": "^2.24.0",
+		"tslint-config-prettier": "^1.18.0"
+	},
+	"devDependencies": {},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+		"lint": "tslint -p .",
+		"build": "tsc",
+		"prepare": "npm run build",
+		"prepublishOnly": "npm run test:run && npm run lint",
+		"preversion": "npm run lint",
+		"postversion": "git push && git push --tags"
+	},
+	"author": "",
+	"license": "ISC"
 }
