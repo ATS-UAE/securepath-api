@@ -173,12 +173,11 @@ export class UserManagement extends Api {
 	};
 
 	private exceptTrackers = (list1: string[], list2: string[]) => {
-		const result: string[] = list1;
+		const result: string[] = [];
 
-		for (const tracker of list2) {
-			const index = result.indexOf(tracker);
-			if (index >= 0) {
-				result.splice(index, 1);
+		for (const item of list1) {
+			if (list2.indexOf(item) >= 0) {
+				result.push(item);
 			}
 		}
 
