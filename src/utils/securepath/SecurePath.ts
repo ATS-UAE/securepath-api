@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import md5 from "md5-hex";
-import { TrackerManagement, Live } from ".";
+import { TrackerManagement, Live, UserManagement } from ".";
 import { stringifyQuery } from "..";
 import { CredentialsException } from "./exceptions/CredentialsException";
 import { AuthNeededException } from "./exceptions/AuthNeededException";
@@ -107,6 +107,11 @@ export class SecurePath {
 	get TrackerManagement() {
 		return new TrackerManagement(this.api);
 	}
+
+	get UserManagement() {
+		return new UserManagement(this.api);
+	}
+
 	get Live() {
 		return new Live(this.api);
 	}
