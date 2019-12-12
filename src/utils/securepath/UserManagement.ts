@@ -79,6 +79,30 @@ export interface GetUserTrackersReponse {
 }
 
 export class UserManagement extends Api {
+	private static unionTrackers = (list1: string[], list2: string[]) => {
+		const result: string[] = list1;
+
+		for (const tracker of list2) {
+			if (!result.includes(tracker)) {
+				result.push(tracker);
+			}
+		}
+
+		return result;
+	};
+
+	private static exceptTrackers = (list1: string[], list2: string[]) => {
+		const result: string[] = [];
+
+		for (const item of list1) {
+			if (list2.indexOf(item) < 0) {
+				result.push(item);
+			}
+		}
+
+		return result;
+	};
+
 	public getUsers = async () => {
 		await this.checkLogin();
 		const users = await this.api.get<ACCUsersListResponse[]>(
@@ -134,7 +158,7 @@ export class UserManagement extends Api {
 	public addTrackers = async (username: string, ...trackers: string[]) => {
 		const userTrackers = await this.getUserTrackers(username);
 
-		const union = this.unionTrackers(
+		const union = UserManagement.unionTrackers(
 			userTrackers.in.map(t => t.id),
 			trackers
 		);
@@ -145,7 +169,7 @@ export class UserManagement extends Api {
 	public removeTrackers = async (username: string, ...trackers: string[]) => {
 		const userTrackers = await this.getUserTrackers(username);
 
-		const except = this.exceptTrackers(
+		const except = UserManagement.exceptTrackers(
 			userTrackers.in.map(t => t.id),
 			trackers
 		);
@@ -164,29 +188,5 @@ export class UserManagement extends Api {
 				}
 			}
 		);
-	};
-
-	private unionTrackers = (list1: string[], list2: string[]) => {
-		const result: string[] = list1;
-
-		for (const tracker of list2) {
-			if (!result.includes(tracker)) {
-				result.push(tracker);
-			}
-		}
-
-		return result;
-	};
-
-	private exceptTrackers = (list1: string[], list2: string[]) => {
-		const result: string[] = [];
-
-		for (const item of list1) {
-			if (list2.indexOf(item) >= 0) {
-				result.push(item);
-			}
-		}
-
-		return result;
 	};
 }
