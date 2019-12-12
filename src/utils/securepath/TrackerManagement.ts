@@ -49,7 +49,7 @@ export interface GetAllTrackerListResponse {
 	searchKeywords: string;
 	simno: string;
 	trackerExpiry: number;
-	trackerId: string;
+	trackerid: string;
 	type: DeviceType;
 	users?: string;
 }
@@ -69,7 +69,7 @@ export class TrackerManagement extends Api {
 				name,
 				searchKeywords,
 				simno,
-				trackerId,
+				trackerid,
 				trackerExpiry,
 				type,
 				users
@@ -80,7 +80,7 @@ export class TrackerManagement extends Api {
 				searchKeywords,
 				trackerName: name,
 				simNo: simno,
-				trackerId,
+				trackerId: trackerid,
 				trackerExpiry,
 				deviceType: type,
 				users: users?.split(",") || []
