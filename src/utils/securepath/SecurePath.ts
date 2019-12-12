@@ -1,15 +1,16 @@
-import axios, { AxiosInstance, AxiosResponse } from "axios";
+import axios from "axios";
 import md5 from "md5-hex";
 import {
 	TrackerManagement,
 	Live,
 	UserManagement,
 	CredentialsException,
-	AuthNeededException
+	AuthNeededException,
+	Api
 } from ".";
 import { stringifyQuery } from "..";
 
-export class SecurePath {
+export class SecurePath extends Api {
 	public static login = async (username: string, password: string) => {
 		const api = axios.create({ withCredentials: true });
 
@@ -73,35 +74,6 @@ export class SecurePath {
 		}
 
 		return sp;
-	};
-
-	protected static isSecurepathForbidden = (
-		response: AxiosResponse
-	): boolean => {
-		if (
-			typeof response.data === "string" &&
-			response.data.search("Redirecting to login page .. Please wait") > 0
-		) {
-			return true;
-		}
-		try {
-			JSON.stringify(response.data);
-			return false;
-		} catch (e) {
-			return true;
-		}
-	};
-
-	protected constructor(public api: AxiosInstance) {}
-
-	public checkLogin = async () => {
-		const isLoggedIn = await this.api.get(
-			"http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=display"
-		);
-
-		if (SecurePath.isSecurepathForbidden(isLoggedIn)) {
-			throw new AuthNeededException();
-		}
 	};
 
 	get authCookie(): string {

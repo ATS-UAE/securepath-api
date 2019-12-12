@@ -1,4 +1,4 @@
-import { SecurePath } from ".";
+import { Api } from ".";
 import moment = require("moment");
 
 export interface ACCUsersListResponse {
@@ -77,7 +77,7 @@ export interface GetUserTrackersReponse {
 	out: TrackerMap[];
 }
 
-export class UserManagement extends SecurePath {
+export class UserManagement extends Api {
 	public getUsers = async () => {
 		await this.checkLogin();
 		const users = await this.api.get<ACCUsersListResponse[]>(

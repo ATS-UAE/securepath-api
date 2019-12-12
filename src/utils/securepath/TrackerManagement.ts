@@ -1,5 +1,5 @@
 import moment from "moment";
-import { SecurePath, DeviceExistingException } from ".";
+import { DeviceExistingException, Api } from ".";
 
 export type DeviceType = "GP-01" | "RP-01" | "TT-01" | "TT-02" | "VT62";
 
@@ -54,7 +54,7 @@ export interface GetAllTrackerListResponse {
 	users?: string;
 }
 
-export class TrackerManagement extends SecurePath {
+export class TrackerManagement extends Api {
 	public getTrackers = async (): Promise<TrackerListItem[]> => {
 		await this.checkLogin();
 		const trackers = await this.api.get<GetAllTrackerListResponse[]>(

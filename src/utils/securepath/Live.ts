@@ -1,6 +1,6 @@
 import moment from "moment";
 import _ from "lodash";
-import { SecurePath, DeviceType } from ".";
+import { DeviceType, Api } from ".";
 
 export enum LiveTrackerStatus {
 	MOVING = "MOVING",
@@ -107,7 +107,7 @@ export interface LiveTrackerMessage {
 	sensors: { [key: string]: string };
 }
 
-export class Live extends SecurePath {
+export class Live extends Api {
 	private static getTrackerStatus = (code: number): LiveTrackerStatus => {
 		switch (code) {
 			case 0:
