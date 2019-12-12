@@ -1,6 +1,7 @@
 import moment from "moment";
 import _ from "lodash";
 import { DeviceType, Api } from ".";
+import { stringifyQuery } from "..";
 
 export enum LiveTrackerStatus {
 	MOVING = "MOVING",
@@ -194,7 +195,12 @@ export class Live extends Api {
 
 		const history = await this.api.post<LoadHistoryResponse | []>(
 			"http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=loadHistory",
-			params
+			stringifyQuery(params),
+			{
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded"
+				}
+			}
 		);
 
 		const messages: LiveTrackerMessage[] = [];

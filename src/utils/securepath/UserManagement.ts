@@ -1,5 +1,6 @@
 import { Api } from ".";
 import moment = require("moment");
+import { stringifyQuery } from "../helpers";
 
 export interface ACCUsersListResponse {
 	username: string;
@@ -117,8 +118,11 @@ export class UserManagement extends Api {
 		await this.checkLogin();
 		const trackerList = await this.api.post<GetTrackersMapResponse>(
 			"http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=getTrackersMap",
+			stringifyQuery({ username }),
 			{
-				username
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded"
+				}
 			}
 		);
 		return {
@@ -153,9 +157,11 @@ export class UserManagement extends Api {
 		await this.checkLogin();
 		await this.api.post(
 			"http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=addTrackersMap",
+			stringifyQuery({ username, list: trackers }),
 			{
-				username,
-				list: trackers
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded"
+				}
 			}
 		);
 	};

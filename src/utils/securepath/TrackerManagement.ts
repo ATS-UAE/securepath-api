@@ -1,5 +1,6 @@
 import moment from "moment";
 import { DeviceExistingException, Api } from ".";
+import { stringifyQuery } from "../helpers";
 
 export type DeviceType = "GP-01" | "RP-01" | "TT-01" | "TT-02" | "VT62";
 
@@ -104,7 +105,12 @@ export class TrackerManagement extends Api {
 
 		await this.api.post(
 			"http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=insertTrackerCard",
-			params
+			stringifyQuery(params),
+			{
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded"
+				}
+			}
 		);
 
 		return trackerId.data.tid;
@@ -120,7 +126,12 @@ export class TrackerManagement extends Api {
 
 		await this.api.post(
 			"http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=updateTrackerCard",
-			params
+			stringifyQuery(params),
+			{
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded"
+				}
+			}
 		);
 	};
 
