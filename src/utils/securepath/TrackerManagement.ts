@@ -1,6 +1,5 @@
 import moment from "moment";
-import { SecurePath } from "./SecurePath";
-import { DeviceExistingException } from "./exceptions/DeviceExistingException";
+import { SecurePath, DeviceExistingException } from ".";
 
 export type DeviceType = "GP-01" | "RP-01" | "TT-01" | "TT-02" | "VT62";
 

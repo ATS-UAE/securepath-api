@@ -1,9 +1,13 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import md5 from "md5-hex";
-import { TrackerManagement, Live, UserManagement } from ".";
+import {
+	TrackerManagement,
+	Live,
+	UserManagement,
+	CredentialsException,
+	AuthNeededException
+} from ".";
 import { stringifyQuery } from "..";
-import { CredentialsException } from "./exceptions/CredentialsException";
-import { AuthNeededException } from "./exceptions/AuthNeededException";
 
 export class SecurePath {
 	public static login = async (username: string, password: string) => {
