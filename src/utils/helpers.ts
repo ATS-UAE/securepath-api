@@ -4,7 +4,7 @@ export const stringifyQuery = (data: object) => {
 
 		if (value instanceof Array) {
 			for (const [index, item] of value.entries()) {
-				acc += `${key}[]=${encodeURIComponent(item)}${
+				acc += `${key}${encodeURIComponent("[]")}=${encodeURIComponent(item)}${
 					index === value.length - 1 ? "" : "&"
 				}`;
 			}
