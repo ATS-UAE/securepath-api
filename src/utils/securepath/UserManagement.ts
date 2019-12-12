@@ -78,11 +78,6 @@ export interface GetUserTrackersReponse {
 }
 
 export class UserManagement extends SecurePath {
-	// TODO: GET http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=ACCUsersList
-	// TODO: POST  http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=getTrackersMap
-	// { "Form data": { username: "ats.fast.ahmed" } };
-	// TODO: http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=addTrackersMap
-	// { username: string; list: string[] }
 	public getUsers = async () => {
 		await this.checkLogin();
 		const users = await this.api.get<ACCUsersListResponse[]>(
