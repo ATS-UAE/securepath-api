@@ -24,7 +24,32 @@ export interface TrackerData {
     odometerValue?: number;
     ignitionSensor?: boolean;
 }
+export interface TrackerListItem {
+    chassisNo: string;
+    imei: string;
+    licensePlate: string;
+    trackerName: string;
+    searchKeywords: string;
+    simNo: string;
+    trackerExpiry: number;
+    trackerId: string;
+    deviceType: DeviceType;
+    users: string[];
+}
+export interface GetAllTrackerListResponse {
+    chassisNo: string;
+    imei: string;
+    licensePlate: string;
+    name: string;
+    searchKeywords: string;
+    simno: string;
+    trackerExpiry: number;
+    trackerId: string;
+    type: DeviceType;
+    users?: string;
+}
 export declare class TrackerManagement extends SecurePath {
+    getTrackers: () => Promise<TrackerListItem[]>;
     createTracker: (data: TrackerData) => Promise<string>;
     updateTracker: (trackerId: string, data: TrackerData) => Promise<void>;
     private checkExistingImei;

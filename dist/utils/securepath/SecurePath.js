@@ -14,8 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = __importDefault(require("axios"));
 const md5_hex_1 = __importDefault(require("md5-hex"));
+const _1 = require(".");
 const __1 = require("..");
-const __2 = require("..");
 const CredentialsException_1 = require("./exceptions/CredentialsException");
 const AuthNeededException_1 = require("./exceptions/AuthNeededException");
 class SecurePath {
@@ -24,12 +24,18 @@ class SecurePath {
         this.checkLogin = () => __awaiter(this, void 0, void 0, function* () {
             const isLoggedIn = yield this.api.get("http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=display");
             if (SecurePath.isSecurepathForbidden(isLoggedIn)) {
-                throw new CredentialsException_1.CredentialsException();
+                throw new AuthNeededException_1.AuthNeededException();
             }
         });
-        this.TrackerManagement = () => {
-            return new __1.TrackerManagement(this.api);
-        };
+    }
+    get authCookie() {
+        return this.api.defaults.headers.Cookie;
+    }
+    get TrackerManagement() {
+        return new _1.TrackerManagement(this.api);
+    }
+    get Live() {
+        return new _1.Live(this.api);
     }
 }
 exports.SecurePath = SecurePath;
@@ -43,7 +49,7 @@ SecurePath.login = (username, password) => __awaiter(void 0, void 0, void 0, fun
     });
     api.defaults.headers.Cookie = seed.headers["set-cookie"][0];
     const hash = md5_hex_1.default(password + seed.data);
-    const queryString = __2.stringifyQuery({
+    const queryString = __1.stringifyQuery({
         uname: username,
         hash,
         tz: "Asia/Dubai",

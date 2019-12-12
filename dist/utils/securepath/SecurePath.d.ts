@@ -1,11 +1,13 @@
 import { AxiosInstance, AxiosResponse } from "axios";
-import { TrackerManagement } from "..";
+import { TrackerManagement, Live } from ".";
 export declare class SecurePath {
-    protected api: AxiosInstance;
+    api: AxiosInstance;
     static login: (username: string, password: string) => Promise<SecurePath>;
     static useCookie: (cookie: string) => Promise<SecurePath>;
     protected static isSecurepathForbidden: (response: AxiosResponse<any>) => boolean;
     protected constructor(api: AxiosInstance);
     checkLogin: () => Promise<void>;
-    TrackerManagement: () => TrackerManagement;
+    get authCookie(): string;
+    get TrackerManagement(): TrackerManagement;
+    get Live(): Live;
 }

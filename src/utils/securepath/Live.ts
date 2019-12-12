@@ -1,3 +1,5 @@
+import moment from "moment";
+import _ from "lodash";
 import { SecurePath, DeviceType } from ".";
 
 export enum LiveTrackerStatus {
@@ -56,6 +58,53 @@ export interface LiveTrackerItem {
 	speed?: number;
 	direction?: number;
 	users?: string[];
+	engineOn?: boolean;
+}
+
+export interface LoadHistoryResponse {
+	mode: string;
+	data: Array<{
+		sdate: string;
+		stime: number;
+		edate: string;
+		etime: number;
+		name: string;
+		dname: boolean;
+		mode: string;
+		data: Array<{
+			_id: { $id: string };
+			datetime: { sec: number; usec: number };
+			time: number;
+			timestamp: number;
+			IO: string;
+			odometer: number;
+			driverId: string;
+			siteId: string;
+			private: number;
+			misc: string;
+			latitude: number;
+			longitude: number;
+			speed: number;
+			direction: number;
+			s: string;
+			dateString: string;
+		}>;
+	}>;
+}
+
+export interface LiveTrackerMessage {
+	sats: number;
+	longitude: number;
+	latitude: number;
+	altitude: number;
+	hdop?: number;
+	odo?: number;
+	ibutton?: string;
+	speed: number;
+	direction: number;
+	ignitionOn: boolean;
+	timestamp: number;
+	sensors: { [key: string]: string };
 }
 
 export class Live extends SecurePath {
@@ -76,11 +125,13 @@ export class Live extends SecurePath {
 		}
 	};
 
-	public async getTrackers() {
+	public async getTrackers(update?: boolean) {
 		await this.checkLogin();
 
 		const liveTrackers = await this.api.get<GetTrackersResponse[]>(
-			"http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=getTrackers"
+			`http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=getTrackers${
+				update ? "&update=1" : ""
+			}`
 		);
 
 		return liveTrackers.data.map<LiveTrackerItem>(
@@ -100,12 +151,14 @@ export class Live extends SecurePath {
 				longitude,
 				speed,
 				direction,
-				users
+				users,
+				IO
 			}) => ({
 				trackerName: name,
 				deviceType: fscode,
 				trackerId: tid,
 				status: Live.getTrackerStatus(iconIndex),
+				engineOn: IO && IO.includes("j") ? true : false,
 				imei,
 				trackerSerial,
 				simNo: simno,
@@ -121,4 +174,53 @@ export class Live extends SecurePath {
 			})
 		);
 	}
+
+	public getHistory = async (trackerId: string, from: number, to: number) => {
+		await this.checkLogin();
+
+		const start = moment(from, "X");
+		const end = moment(to, "X");
+
+		const params = {
+			sdate: start.format("YYYY-MM-DD"),
+			shour: start.format("HH"),
+			smin: start.format("mm"),
+			edate: end.format("YYYY-MM-DD"),
+			ehour: end.format("HH"),
+			emin: end.format("mm"),
+			template: "custom",
+			tid: trackerId
+		};
+
+		const history = await this.api.post<LoadHistoryResponse | []>(
+			"http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=loadHistory",
+			params
+		);
+
+		const messages: LiveTrackerMessage[] = [];
+
+		if (!(history.data instanceof Array)) {
+			history.data.data.forEach(data => {
+				data.data.forEach(data => {
+					const misc = JSON.parse(data.misc);
+					messages.push({
+						sensors: _.omit(misc, "altitude", "sats", "hdop", "ibutton"),
+						altitude: _.pick(misc, "altitude").altitude,
+						sats: _.pick(misc, "sats").sats,
+						hdop: _.pick(misc, "hdop").hdop,
+						longitude: data.longitude,
+						latitude: data.latitude,
+						odo: _.pick(misc).odo || null,
+						ibutton: _.pick(misc, ["ibutton"]).ibutton || null,
+						speed: data.speed,
+						direction: data.direction,
+						ignitionOn: data.IO.includes("j") ? true : false,
+						timestamp: data.timestamp
+					});
+				});
+			});
+		}
+
+		return messages;
+	};
 }

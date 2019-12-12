@@ -18,6 +18,25 @@ const DeviceExistingException_1 = require("./exceptions/DeviceExistingException"
 class TrackerManagement extends SecurePath_1.SecurePath {
     constructor() {
         super(...arguments);
+        this.getTrackers = () => __awaiter(this, void 0, void 0, function* () {
+            yield this.checkLogin();
+            const trackers = yield this.api.get("http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=getAllTrackersList");
+            return trackers.data.map(({ chassisNo, imei, licensePlate, name, searchKeywords, simno, trackerId, trackerExpiry, type, users }) => {
+                var _a;
+                return ({
+                    chassisNo,
+                    imei,
+                    licensePlate,
+                    searchKeywords,
+                    trackerName: name,
+                    simNo: simno,
+                    trackerId,
+                    trackerExpiry,
+                    deviceType: type,
+                    users: ((_a = users) === null || _a === void 0 ? void 0 : _a.split(",")) || []
+                });
+            });
+        });
         this.createTracker = (data) => __awaiter(this, void 0, void 0, function* () {
             yield this.checkLogin();
             const trackerId = yield this.api.get("http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=getTrackerID");

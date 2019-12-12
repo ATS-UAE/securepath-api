@@ -88,7 +88,7 @@ export class SecurePath {
 		}
 	};
 
-	protected constructor(protected api: AxiosInstance) {}
+	protected constructor(public api: AxiosInstance) {}
 
 	public checkLogin = async () => {
 		const isLoggedIn = await this.api.get(

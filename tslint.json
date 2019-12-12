@@ -7,7 +7,8 @@
 		"ordered-imports": false,
 		"object-literal-sort-keys": false,
 		"interface-name": false,
-		"no-unused-expression": true
+		"no-unused-expression": true,
+		"no-shadowed-variable": false
 	},
 	"rulesDirectory": []
 }
