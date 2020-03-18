@@ -106,7 +106,7 @@ export class UserManagement extends Api {
 	public getUsers = async () => {
 		await this.checkLogin();
 		const users = await this.api.get<ACCUsersListResponse[]>(
-			"http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=ACCUsersList"
+			this.options.baseUrl + "/php/getpage.php?mode=admin&fx=ACCUsersList"
 		);
 
 		return users.data.map<UserListItem>(user => ({
@@ -141,7 +141,7 @@ export class UserManagement extends Api {
 	): Promise<GetUserTrackersReponse> => {
 		await this.checkLogin();
 		const trackerList = await this.api.post<GetTrackersMapResponse>(
-			"http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=getTrackersMap",
+			this.options.baseUrl + "/php/getpage.php?mode=admin&fx=getTrackersMap",
 			stringifyQuery({ username }),
 			{
 				headers: {
@@ -180,7 +180,7 @@ export class UserManagement extends Api {
 	public setTrackers = async (username: string, trackers: string[]) => {
 		await this.checkLogin();
 		await this.api.post(
-			"http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=addTrackersMap",
+			this.options.baseUrl + "/php/getpage.php?mode=admin&fx=addTrackersMap",
 			stringifyQuery({ username, list: trackers }),
 			{
 				headers: {

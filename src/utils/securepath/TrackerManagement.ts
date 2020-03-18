@@ -59,7 +59,7 @@ export class TrackerManagement extends Api {
 	public getTrackers = async (): Promise<TrackerListItem[]> => {
 		await this.checkLogin();
 		const trackers = await this.api.get<GetAllTrackerListResponse[]>(
-			"http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=getAllTrackersList"
+			this.options.baseUrl + "/php/getpage.php?mode=admin&fx=getAllTrackersList"
 		);
 
 		return trackers.data.map<TrackerListItem>(
@@ -93,7 +93,7 @@ export class TrackerManagement extends Api {
 		await this.checkLogin();
 
 		const trackerId = await this.api.get<{ tid: string }>(
-			"http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=getTrackerID"
+			this.options.baseUrl + "/php/getpage.php?mode=admin&fx=getTrackerID"
 		);
 
 		await this.checkExistingImei(data.imei);
@@ -104,7 +104,7 @@ export class TrackerManagement extends Api {
 		});
 
 		await this.api.post(
-			"http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=insertTrackerCard",
+			this.options.baseUrl + "/php/getpage.php?mode=admin&fx=insertTrackerCard",
 			stringifyQuery(params),
 			{
 				headers: {
@@ -125,7 +125,7 @@ export class TrackerManagement extends Api {
 		});
 
 		await this.api.post(
-			"http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=updateTrackerCard",
+			this.options.baseUrl + "/php/getpage.php?mode=admin&fx=updateTrackerCard",
 			stringifyQuery(params),
 			{
 				headers: {

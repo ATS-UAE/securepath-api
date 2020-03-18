@@ -194,7 +194,7 @@ export class Live extends Api {
 		};
 
 		const history = await this.api.post<LoadHistoryResponse | []>(
-			"http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=loadHistory",
+			this.options.baseUrl + "/php/getpage.php?mode=admin&fx=loadHistory",
 			stringifyQuery(params),
 			{
 				headers: {

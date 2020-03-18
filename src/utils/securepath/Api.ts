@@ -1,6 +1,9 @@
 import { AxiosInstance, AxiosResponse } from "axios";
 import { AuthNeededException } from ".";
 
+export interface ApiOptions {
+	baseUrl: string;
+}
 export abstract class Api {
 	protected static isSecurepathForbidden = (
 		response: AxiosResponse
@@ -19,11 +22,14 @@ export abstract class Api {
 		}
 	};
 
-	protected constructor(public api: AxiosInstance) {}
+	protected constructor(
+		public api: AxiosInstance,
+		public options: ApiOptions
+	) {}
 
 	public checkLogin = async () => {
 		const isLoggedIn = await this.api.get(
-			"http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=display"
+			this.options.baseUrl + "/php/getpage.php?mode=admin&fx=display"
 		);
 
 		if (Api.isSecurepathForbidden(isLoggedIn)) {

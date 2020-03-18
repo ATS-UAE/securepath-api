@@ -6,16 +6,21 @@ import {
 	UserManagement,
 	CredentialsException,
 	AuthNeededException,
-	Api
+	Api,
+	ApiOptions
 } from ".";
 import { stringifyQuery } from "..";
 
 export class SecurePath extends Api {
-	public static login = async (username: string, password: string) => {
+	public static login = async (
+		username: string,
+		password: string,
+		options: ApiOptions
+	) => {
 		const api = axios.create({ withCredentials: true });
 
 		const seed = await api(
-			"http://securepath.atsuae.net/php/getpage.php?mode=login&fx=getSeed",
+			options.baseUrl + "/php/getpage.php?mode=login&fx=getSeed",
 			{
 				method: "post",
 				headers: {
@@ -36,7 +41,7 @@ export class SecurePath extends Api {
 		});
 
 		await api.post(
-			"http://securepath.atsuae.net/php/getpage.php?mode=login&fx=authenticate",
+			options.baseUrl + "/php/getpage.php?mode=login&fx=authenticate",
 			queryString,
 			{
 				headers: {
@@ -45,7 +50,7 @@ export class SecurePath extends Api {
 			}
 		);
 
-		const sp = new SecurePath(api);
+		const sp = new SecurePath(api, options);
 
 		try {
 			await sp.checkLogin();
@@ -59,10 +64,10 @@ export class SecurePath extends Api {
 		return sp;
 	};
 
-	public static useCookie = async (cookie: string) => {
+	public static useCookie = async (cookie: string, options: ApiOptions) => {
 		const api = axios.create({ withCredentials: true });
 		api.defaults.headers.Cookie = cookie;
-		const sp = new SecurePath(api);
+		const sp = new SecurePath(api, options);
 
 		try {
 			await sp.checkLogin();
@@ -81,14 +86,14 @@ export class SecurePath extends Api {
 	}
 
 	get TrackerManagement() {
-		return new TrackerManagement(this.api);
+		return new TrackerManagement(this.api, this.options);
 	}
 
 	get UserManagement() {
-		return new UserManagement(this.api);
+		return new UserManagement(this.api, this.options);
 	}
 
 	get Live() {
-		return new Live(this.api);
+		return new Live(this.api, this.options);
 	}
 }
