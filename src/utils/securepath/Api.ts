@@ -29,7 +29,7 @@ export abstract class Api {
 
 	public checkLogin = async () => {
 		const isLoggedIn = await this.api.get(
-			this.options.baseUrl + "/php/getpage.php?mode=admin&fx=display"
+			`${this.options.baseUrl}/php/getpage.php?mode=admin&fx=display`
 		);
 
 		if (Api.isSecurepathForbidden(isLoggedIn)) {

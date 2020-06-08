@@ -130,7 +130,7 @@ export class Live extends Api {
 		await this.checkLogin();
 
 		const liveTrackers = await this.api.get<GetTrackersResponse[]>(
-			`http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=getTrackers${
+			`${this.options.baseUrl}/php/getpage.php?mode=admin&fx=getTrackers${
 				update ? "&update=1" : ""
 			}`
 		);
@@ -159,7 +159,7 @@ export class Live extends Api {
 				deviceType: fscode,
 				trackerId: tid,
 				status: Live.getTrackerStatus(iconIndex),
-				engineOn: IO && IO.includes("j") ? true : false,
+				engineOn: (IO && IO.includes("j")) || false,
 				imei,
 				trackerSerial,
 				simNo: simno,
@@ -194,7 +194,7 @@ export class Live extends Api {
 		};
 
 		const history = await this.api.post<LoadHistoryResponse | []>(
-			this.options.baseUrl + "/php/getpage.php?mode=admin&fx=loadHistory",
+			`${this.options.baseUrl}/php/getpage.php?mode=admin&fx=loadHistory`,
 			stringifyQuery(params),
 			{
 				headers: {
@@ -206,22 +206,28 @@ export class Live extends Api {
 		const messages: LiveTrackerMessage[] = [];
 
 		if (!(history.data instanceof Array)) {
-			history.data.data.forEach(data => {
-				data.data.forEach(data => {
-					const misc = JSON.parse(data.misc);
+			history.data.data.forEach((data) => {
+				data.data.forEach((message) => {
+					const misc = JSON.parse(message.misc);
 					messages.push({
-						sensors: _.omit(misc, "altitude", "sats", "hdop", "ibutton"),
+						sensors: _.omit(
+							misc,
+							"altitude",
+							"sats",
+							"hdop",
+							"ibutton"
+						),
 						altitude: _.pick(misc, "altitude").altitude,
 						sats: _.pick(misc, "sats").sats,
 						hdop: _.pick(misc, "hdop").hdop,
-						longitude: data.longitude,
-						latitude: data.latitude,
+						longitude: message.longitude,
+						latitude: message.latitude,
 						odo: _.pick(misc).odo || null,
 						ibutton: _.pick(misc, ["ibutton"]).ibutton || null,
-						speed: data.speed,
-						direction: data.direction,
-						ignitionOn: data.IO.includes("j") ? true : false,
-						timestamp: data.timestamp
+						speed: message.speed,
+						direction: message.direction,
+						ignitionOn: message.IO.includes("j"),
+						timestamp: message.timestamp
 					});
 				});
 			});

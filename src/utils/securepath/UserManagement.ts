@@ -1,5 +1,5 @@
+import moment from "moment";
 import { Api } from ".";
-import moment = require("moment");
 import { stringifyQuery } from "../helpers";
 
 export interface ACCUsersListResponse {
@@ -82,11 +82,11 @@ export class UserManagement extends Api {
 	private static unionTrackers = (list1: string[], list2: string[]) => {
 		const result: string[] = list1;
 
-		for (const tracker of list2) {
+		list2.forEach((tracker) => {
 			if (!result.includes(tracker)) {
 				result.push(tracker);
 			}
-		}
+		});
 
 		return result;
 	};
@@ -94,11 +94,11 @@ export class UserManagement extends Api {
 	private static exceptTrackers = (list1: string[], list2: string[]) => {
 		const result: string[] = [];
 
-		for (const item of list1) {
-			if (list2.indexOf(item) < 0) {
-				result.push(item);
+		list1.forEach((tracker) => {
+			if (list2.indexOf(tracker) < 0) {
+				result.push(tracker);
 			}
-		}
+		});
 
 		return result;
 	};
@@ -106,10 +106,10 @@ export class UserManagement extends Api {
 	public getUsers = async () => {
 		await this.checkLogin();
 		const users = await this.api.get<ACCUsersListResponse[]>(
-			this.options.baseUrl + "/php/getpage.php?mode=admin&fx=ACCUsersList"
+			`${this.options.baseUrl}/php/getpage.php?mode=admin&fx=ACCUsersList`
 		);
 
-		return users.data.map<UserListItem>(user => ({
+		return users.data.map<UserListItem>((user) => ({
 			username: user.username,
 			password: user.password,
 			createdAt: moment(user.creationtime, "YYYY-MM-DD").unix(),
@@ -141,7 +141,7 @@ export class UserManagement extends Api {
 	): Promise<GetUserTrackersReponse> => {
 		await this.checkLogin();
 		const trackerList = await this.api.post<GetTrackersMapResponse>(
-			this.options.baseUrl + "/php/getpage.php?mode=admin&fx=getTrackersMap",
+			`${this.options.baseUrl}/php/getpage.php?mode=admin&fx=getTrackersMap`,
 			stringifyQuery({ username }),
 			{
 				headers: {
@@ -159,7 +159,7 @@ export class UserManagement extends Api {
 		const userTrackers = await this.getUserTrackers(username);
 
 		const union = UserManagement.unionTrackers(
-			userTrackers.in.map(t => t.id),
+			userTrackers.in.map((t) => t.id),
 			trackers
 		);
 
@@ -170,7 +170,7 @@ export class UserManagement extends Api {
 		const userTrackers = await this.getUserTrackers(username);
 
 		const except = UserManagement.exceptTrackers(
-			userTrackers.in.map(t => t.id),
+			userTrackers.in.map((t) => t.id),
 			trackers
 		);
 
@@ -180,7 +180,7 @@ export class UserManagement extends Api {
 	public setTrackers = async (username: string, trackers: string[]) => {
 		await this.checkLogin();
 		await this.api.post(
-			this.options.baseUrl + "/php/getpage.php?mode=admin&fx=addTrackersMap",
+			`${this.options.baseUrl}/php/getpage.php?mode=admin&fx=addTrackersMap`,
 			stringifyQuery({ username, list: trackers }),
 			{
 				headers: {

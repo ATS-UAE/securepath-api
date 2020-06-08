@@ -20,7 +20,7 @@ export class SecurePath extends Api {
 		const api = axios.create({ withCredentials: true });
 
 		const seed = await api(
-			options.baseUrl + "/php/getpage.php?mode=login&fx=getSeed",
+			`${options.baseUrl}/php/getpage.php?mode=login&fx=getSeed`,
 			{
 				method: "post",
 				headers: {
@@ -29,7 +29,7 @@ export class SecurePath extends Api {
 			}
 		);
 
-		api.defaults.headers.Cookie = seed.headers["set-cookie"][0];
+		[api.defaults.headers.Cookie] = seed.headers["set-cookie"];
 
 		const hash = md5(password + seed.data);
 
@@ -41,7 +41,7 @@ export class SecurePath extends Api {
 		});
 
 		await api.post(
-			options.baseUrl + "/php/getpage.php?mode=login&fx=authenticate",
+			`${options.baseUrl}/php/getpage.php?mode=login&fx=authenticate`,
 			queryString,
 			{
 				headers: {

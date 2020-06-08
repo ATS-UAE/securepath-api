@@ -59,7 +59,7 @@ export class TrackerManagement extends Api {
 	public getTrackers = async (): Promise<TrackerListItem[]> => {
 		await this.checkLogin();
 		const trackers = await this.api.get<GetAllTrackerListResponse[]>(
-			this.options.baseUrl + "/php/getpage.php?mode=admin&fx=getAllTrackersList"
+			`${this.options.baseUrl}/php/getpage.php?mode=admin&fx=getAllTrackersList`
 		);
 
 		return trackers.data.map<TrackerListItem>(
@@ -93,7 +93,7 @@ export class TrackerManagement extends Api {
 		await this.checkLogin();
 
 		const trackerId = await this.api.get<{ tid: string }>(
-			this.options.baseUrl + "/php/getpage.php?mode=admin&fx=getTrackerID"
+			`${this.options.baseUrl}/php/getpage.php?mode=admin&fx=getTrackerID`
 		);
 
 		await this.checkExistingImei(data.imei);
@@ -104,7 +104,7 @@ export class TrackerManagement extends Api {
 		});
 
 		await this.api.post(
-			this.options.baseUrl + "/php/getpage.php?mode=admin&fx=insertTrackerCard",
+			`${this.options.baseUrl}/php/getpage.php?mode=admin&fx=insertTrackerCard`,
 			stringifyQuery(params),
 			{
 				headers: {
@@ -125,7 +125,7 @@ export class TrackerManagement extends Api {
 		});
 
 		await this.api.post(
-			this.options.baseUrl + "/php/getpage.php?mode=admin&fx=updateTrackerCard",
+			`${this.options.baseUrl}/php/getpage.php?mode=admin&fx=updateTrackerCard`,
 			stringifyQuery(params),
 			{
 				headers: {
@@ -137,7 +137,7 @@ export class TrackerManagement extends Api {
 
 	private checkExistingImei = async (imei: string) => {
 		const existing = await this.api.get(
-			`http://securepath.atsuae.net/php/getpage.php?mode=admin&fx=validateIMEI&imei=${imei}`
+			`${this.options.baseUrl}/php/getpage.php?mode=admin&fx=validateIMEI&imei=${imei}`
 		);
 
 		if (existing.data.code === "exists") {
@@ -191,7 +191,9 @@ export class TrackerManagement extends Api {
 			driverID: "0",
 			doors: "0",
 			weightSensor: "0",
-			odometerValue: data.odometerValue ? String(data.odometerValue) : "0",
+			odometerValue: data.odometerValue
+				? String(data.odometerValue)
+				: "0",
 			odometerSensor: data.odometerValue ? "1" : "0",
 			smsLimitValue: "0",
 			smsLimit: "0",
