@@ -4,7 +4,7 @@
 	"description": "SecurePath API wrapper for both client and server JavaScript written in TypeScript.",
 	"main": "dist/index.js",
 	"repository": {
-		"url": "https://github.com/ramilamparo/securepath-rest"
+		"url": "https://github.com/ramilamparo/securepath-api"
 	},
 	"dependencies": {
 		"@types/lodash": "^4.14.149",
