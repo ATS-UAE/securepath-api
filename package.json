@@ -34,7 +34,8 @@
 		"prepare": "npm run build",
 		"prepublishOnly": "npm run test:run && npm run lint",
 		"preversion": "npm run lint && npm run format",
-		"postversion": "git push && git push --tags"
+		"postversion": "git push && git push --tags",
+		"postinstall": "npm run build"
 	},
 	"author": "",
 	"license": "ISC"
