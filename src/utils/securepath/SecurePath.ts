@@ -29,7 +29,9 @@ export class SecurePath extends Api {
 			}
 		);
 
-		[api.defaults.headers.Cookie] = seed.headers["set-cookie"];
+		const [setCookie] = seed.headers["set-cookie"];
+
+		api.defaults.headers.Cookie = setCookie;
 
 		const hash = md5(password + seed.data);
 
