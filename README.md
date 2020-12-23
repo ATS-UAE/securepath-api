@@ -10,7 +10,7 @@ const session = await SecurePath.login(
     "Username",
     "Password",
     {
-        baseUrl
+        baseUrl: "rac.securepath.ae:<PORT>"
     }
 );
 
