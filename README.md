@@ -1,6 +1,10 @@
 # securepath-api
 SecurePath API wrapper for both client and server JavaScript written in TypeScript.
 
+### Installation
+
+`npm install git+https://github.com/ramilamparo/securepath-api.git`
+
 ### Basic usage
 
 ```javascript
